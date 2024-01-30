@@ -84,7 +84,7 @@ static int battst_reset()
 		a = system("dumpsys batterystats --reset > /dev/null 2>&1");
 		if (a == -1){
 			printf("Shell call failed");
-			return -1;
+			return 1;
 		}
 		batt_chaged = 0;
 	}
@@ -102,12 +102,13 @@ static int chk_sdfile(const char *filepath)
 			fclose(file);
 		} else {
 			printf("File created failed : %s\n", filepath);
-			return -1;
+			return 1;
 		}
 	} else {
 		limitcap = file_wr(filepath, r, 0);
 		if (limitcap == -1 ) {
 			printf("Sdcard file read failed\n");
+			return 1;
 		}
 		battdebug("Read limitcap: %d\n", limitcap);
 	}
@@ -169,17 +170,17 @@ int main()
 		ret = chk_sdfile(BATT_CAPFILE);
 		if (ret) {
 			printf("Check battcap failed\n");
-			return -1;
+			return 1;
 		}
 		ret = battst_reset();
 		if (ret) {
-			printf("Batty status reset failed\n");
-			return -1;
+			printf("Battery status reset failed\n");
+			return 1;
 		}
 		ret = chg_contol();
 		if (ret) {
-			printf("Chaerge control failed\n");
-			return -1;
+			printf("Charrge control failed\n");
+			return 1;
 		}
 		battdebug("Version: %s\n",VER);
 		getcurtime();
