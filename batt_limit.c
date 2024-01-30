@@ -21,7 +21,7 @@
 #define w 'w'
 #define VER "2401.1"
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG
 #define battdebug(fmt, ...) printf("BLT: "fmt, ##__VA_ARGS__)
