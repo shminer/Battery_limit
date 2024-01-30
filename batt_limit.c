@@ -101,7 +101,7 @@ static int chk_sdfile(const char *filepath)
 			fprintf(file, "%d", limitcap);
 			fclose(file);
 		} else {
-			printf("File created failed : %s", filepath);
+			printf("File created failed : %s\n", filepath);
 			return -1;
 		}
 	} else {
