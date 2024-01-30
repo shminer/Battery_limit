@@ -102,13 +102,11 @@ static int chk_sdfile(const char *filepath)
 			fclose(file);
 		} else {
 			printf("File created failed : %s\n", filepath);
-			return 1;
 		}
 	} else {
 		limitcap = file_wr(filepath, r, 0);
 		if (limitcap == -1 ) {
 			printf("Sdcard file read failed\n");
-			return 1;
 		}
 		battdebug("Read limitcap: %d\n", limitcap);
 	}
@@ -161,17 +159,14 @@ static int getcurtime() {
 	battdebug("=====NOW is %02d:%02d:%02d======\n",timeinfo->tm_hour, timeinfo->tm_min, timeinfo-> tm_sec);
 	return 0;
 }
+
 int main() 
 {
 	// Loop
 
 	int ret;
 	while(1){
-		ret = chk_sdfile(BATT_CAPFILE);
-		if (ret) {
-			printf("Check battcap failed\n");
-			return 1;
-		}
+		chk_sdfile(BATT_CAPFILE);
 		ret = battst_reset();
 		if (ret) {
 			printf("Battery status reset failed\n");
