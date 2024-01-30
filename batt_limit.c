@@ -14,8 +14,8 @@
 #define BATTSTATS_RESET 1
 #define POLLINGTIME  10					// Secend
 
-//#define POLLINGTIME_ON  30					// Secend
-//#define POLLINGTIME_OFF	60					// Secend
+//#define POLLINGTIME_ON  30			// Secend
+//#define POLLINGTIME_OFF	60			// Secend
 
 #define r 'r'
 #define w 'w'
@@ -164,7 +164,7 @@ int main()
 {
 	// Loop
 
-    int ret;
+	int ret;
 	while(1){
 		ret = chk_sdfile(BATT_CAPFILE);
 		if (ret) {
@@ -187,5 +187,5 @@ int main()
 		sleep(POLLINGTIME);
 	}
 
-    return 0;
+	return 0;
 }
