@@ -1,8 +1,9 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := batt_limit
-LOCAL_SRC_FILES := batt_limit.c
+LOCAL_MODULE := jztools
+LOCAL_SRC_FILES := \
+	batt_limit.c utils.c jztools.c
 
 LOCAL_CFLAGS += -pie -fPIE 
 LOCAL_LDFLAGS += -pie -fPIE
