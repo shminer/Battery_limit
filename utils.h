@@ -12,11 +12,13 @@
 
 #if DEBUG
 #define mydebug(fmt, ...) printf("JZTool: "fmt, ##__VA_ARGS__)
+#define POLLINGTIME_REFESH_CONFIG 1 //Secend
 #define POLLINGTIME  3					// Secend
 #define POLLINGTIME_ON  3					// Secend
 #define POLLINGTIME_OFF  3					// Secend
 #else
 #define mydebug(fmt, ...) ((void)0)
+#define POLLINGTIME_REFESH_CONFIG 15 //Secend
 #define POLLINGTIME  10					// Secend
 #define POLLINGTIME_ON  10					// Secend
 #define POLLINGTIME_OFF  20					// Secend
