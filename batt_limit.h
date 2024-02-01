@@ -7,5 +7,3 @@
 
 #define LIMIT_CAP 85    //default limit charge to 85%
 #define BATTSTATS_RESET 1   //clear battery status after USB disconnect when you need
-
-int do_batt_limit();

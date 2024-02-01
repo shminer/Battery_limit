@@ -6,7 +6,6 @@
 #include "batt_limit.h"
 
 int batt_chaged = 0;
-int limitcap = LIMIT_CAP;
 
 static int ispluged() 
 {
@@ -34,12 +33,15 @@ static int battst_reset()
 	return 0;
 }
 
-static int chg_contol(struct config params)
+static int chg_contol(struct config *params)
 {
 
 	if (ispluged()) {
-		int battcap = 0, batt_limit = params.batt_limitcap, i = 0;
-		
+		int battcap = 0, batt_limit = 0, i = 0;
+		mydebug("BATT CAP limit to : %d\n", params->batt_limitcap);
+
+		batt_limit = params->batt_limitcap; 
+
 		battcap = file_wr(BATT_CAP, r, 0);
 		mydebug("BATT CAP: %d\n", battcap);
 		if (battcap != -1) {
@@ -68,9 +70,8 @@ static int chg_contol(struct config params)
 	return 0;
 }
 
-int do_batt_limit()
+int do_batt_limit(struct config *params)
 {
-	struct config params;
 	int ret;
 	ret = battst_reset();
 	if (ret) {

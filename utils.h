@@ -1,5 +1,5 @@
 
-#define VER "2401.3"
+#define VER "2401.4"
 #define CONFIG_FILE "/data/adb/modules/BATTLIMIT/config.txt"
 
 #define r 'r'
@@ -11,8 +11,8 @@
 #define DEBUG 1
 
 #if DEBUG
-#define mydebug(fmt, ...) printf("JZTool: "fmt, ##__VA_ARGS__)
-#define POLLINGTIME_REFESH_CONFIG 1 //Secend
+#define mydebug(fmt, ...) printf("JZTool: %s: "fmt, __func__, ##__VA_ARGS__)
+#define POLLINGTIME_REFESH_CONFIG 3 //Secend
 #define POLLINGTIME  3					// Secend
 #define POLLINGTIME_ON  3					// Secend
 #define POLLINGTIME_OFF  3					// Secend
@@ -36,3 +36,4 @@ struct config {
 int file_wr(const char *filepath, const char wr, const int val);
 void getcurtime();
 int read_config(const char *filename, struct configkeyval *entries);
+int do_batt_limit(struct config *params);
