@@ -3,6 +3,8 @@
 #define POLLINGTIME  10					// Secend
 #define POLLINGTIME_ON  10					// Secend
 #define POLLINGTIME_OFF  20					// Secend
+#define r 'r'
+#define w 'w'
 
 #define DEBUG 1
 

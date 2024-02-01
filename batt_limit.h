@@ -7,7 +7,4 @@
 #define LIMIT_CAP 85
 #define BATTSTATS_RESET 1
 
-
-#define r 'r'
-#define w 'w'
 int do_batt_limit();
