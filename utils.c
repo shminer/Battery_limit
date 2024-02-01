@@ -54,7 +54,7 @@ int read_config(const char *filepath, struct configkeyval *entries)
     FILE *file;
 	if (access(filepath, F_OK) == 0)
 	{
-		mydebug("Import config file: %s\n", filepath);
+		mydebug("Import config file: \"%s\"\n", filepath);
 		file = fopen(filepath, "r");
 		if (file == NULL) {
 			printf("Error opening file, will use defaule configure");
@@ -66,7 +66,7 @@ int read_config(const char *filepath, struct configkeyval *entries)
 		while (fgets(line, sizeof(line), file) != NULL) {
 			if (sscanf(line, "%[^:]:%d", entries[numEntries].key, &entries[numEntries].value) == 2) 
 			{
-				//mydebug("key %s, val: %d\n", entries[numEntries].key, entries[numEntries].value);
+				mydebug("key %s, val: %d\n", entries[numEntries].key, entries[numEntries].value);
 				(numEntries)++;
 				if (numEntries >= MAX_ENTRIES) {
 					printf("Too many entries. Increase MAX_ENTRIES.\n");

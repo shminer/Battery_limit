@@ -9,8 +9,13 @@
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+struct config params;
 
-static void parse_config(struct config params, const char *filepath)
+static void initialize_config(struct config *params)
+{
+	params->batt_limitcap = LIMIT_CAP;
+}
+static void parse_config(struct config *params, const char *filepath)
  {
     struct configkeyval entries[MAX_ENTRIES];
 	int linecount;
@@ -19,19 +24,17 @@ static void parse_config(struct config params, const char *filepath)
 
     for (int i = 0; i < linecount; i++) {
 		if (strcmp(entries[i].key, "batt_limit") == 0) {
-			params.batt_limitcap = entries[i].value;
-		} else {
-			params.batt_limitcap = LIMIT_CAP;
-		} 
-		mydebug("Key: %s, Value: %d\n", entries[i].key, entries[i].value);
+			mydebug("change batt_limitcap value to %d\n", entries[i].value);
+			params->batt_limitcap = entries[i].value;
+		}
     }
 }
 
 void *refesh_config(void* arg) {
+
     while (1) {
 		pthread_mutex_lock(&mutex);
-		struct config params;
-		parse_config(params,CONFIG_FILE);
+		parse_config(&params,CONFIG_FILE);
 		pthread_mutex_unlock(&mutex);
         sleep(POLLINGTIME_REFESH_CONFIG);
     }
@@ -43,14 +46,13 @@ void *main_task(void* arg) {
 	int ret;
     while (1) {
         pthread_mutex_lock(&mutex);
-		ret = do_batt_limit();
+		ret = do_batt_limit(&params);
 		if (ret) {
 			printf("Batt limit failed\n");
 		}
 		mydebug("Version: %s\n",VER);
+		pthread_mutex_unlock(&mutex);
 		getcurtime();
-
-        pthread_mutex_unlock(&mutex);
         sleep(POLLINGTIME);
     }
 
@@ -61,6 +63,8 @@ void *main_task(void* arg) {
 int main() 
 {
 	pthread_t thread_config, thread_main;
+
+	initialize_config(&params);
 	pthread_create(&thread_config, NULL, refesh_config, NULL);
 	pthread_create(&thread_main, NULL, main_task, NULL);
 	pthread_join(thread_config, NULL);
