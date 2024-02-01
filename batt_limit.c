@@ -19,9 +19,9 @@ static int ispluged()
 	}
 }
 
-static int battst_reset() 
+static int battst_reset(struct config *params) 
 {
-	if (BATTSTATS_RESET == 1 && batt_chaged == 1) {
+	if (params->battstats_reset == 1 && batt_chaged == 1) {
 		int a;
 		a = system("dumpsys batterystats --reset > /dev/null 2>&1");
 		if (a == -1){
@@ -38,9 +38,9 @@ static int chg_contol(struct config *params)
 
 	if (ispluged()) {
 		int battcap = 0, batt_limit = 0, i = 0;
-		mydebug("BATT CAP limit to : %d\n", params->batt_limitcap);
+		mydebug("BATT CAP limit to : %d\n", params->batt_limit);
 
-		batt_limit = params->batt_limitcap; 
+		batt_limit = params->batt_limit; 
 
 		battcap = file_wr(BATT_CAP, r, 0);
 		mydebug("BATT CAP: %d\n", battcap);
@@ -73,7 +73,7 @@ static int chg_contol(struct config *params)
 int do_batt_limit(struct config *params)
 {
 	int ret;
-	ret = battst_reset();
+	ret = battst_reset(params);
 	if (ret) {
 		printf("Battery status reset failed\n");
 		return 1;

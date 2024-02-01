@@ -7,14 +7,22 @@
 #include "batt_limit.h"
 #include "utils.h"
 
+struct config params;
+int pollingtime_config;
+int pollingtime;
+
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
-struct config params;
 
 static void initialize_config(struct config *params)
 {
-	params->batt_limitcap = LIMIT_CAP;
+	params->batt_limit = LIMIT_CAP; 
+	params->battstats_reset = BATTSTATS_RESET;
+	params->poolingtime = POLLINGTIME;
+	params->poolingtime_on = POLLINGTIME_ON;
+	params->poolingtime_off = POLLINGTIME_OFF;
 }
+
 static void parse_config(struct config *params, const char *filepath)
  {
     struct configkeyval entries[MAX_ENTRIES];
@@ -24,8 +32,13 @@ static void parse_config(struct config *params, const char *filepath)
 
     for (int i = 0; i < linecount; i++) {
 		if (strcmp(entries[i].key, "batt_limit") == 0) {
-			mydebug("change batt_limitcap value to %d\n", entries[i].value);
-			params->batt_limitcap = entries[i].value;
+			params->batt_limit = entries[i].value;
+		} else if (strcmp(entries[i].key, "battstats_reset") == 0) {
+			params->battstats_reset = entries[i].value;
+		} else if (strcmp(entries[i].key, "poolingtime_on") == 0) {
+			params->poolingtime_on = entries[i].value;
+		} else if (strcmp(entries[i].key, "poolingtime_off") == 0) {
+			params->poolingtime_off = entries[i].value;
 		}
     }
 }
@@ -36,7 +49,7 @@ void *refesh_config(void* arg) {
 		pthread_mutex_lock(&mutex);
 		parse_config(&params,CONFIG_FILE);
 		pthread_mutex_unlock(&mutex);
-        sleep(POLLINGTIME_REFESH_CONFIG);
+        sleep(pollingtime_config);
     }
 
     return NULL;
@@ -46,6 +59,7 @@ void *main_task(void* arg) {
 	int ret;
     while (1) {
         pthread_mutex_lock(&mutex);
+		pollingtime = params.poolingtime_on;
 		ret = do_batt_limit(&params);
 		if (ret) {
 			printf("Batt limit failed\n");
@@ -53,7 +67,7 @@ void *main_task(void* arg) {
 		mydebug("Version: %s\n",VER);
 		pthread_mutex_unlock(&mutex);
 		getcurtime();
-        sleep(POLLINGTIME);
+        sleep(pollingtime);
     }
 
     return NULL;
@@ -65,6 +79,8 @@ int main()
 	pthread_t thread_config, thread_main;
 
 	initialize_config(&params);
+	pollingtime_config = POLLINGTIME_REFESH_CONFIG;
+
 	pthread_create(&thread_config, NULL, refesh_config, NULL);
 	pthread_create(&thread_main, NULL, main_task, NULL);
 	pthread_join(thread_config, NULL);

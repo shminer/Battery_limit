@@ -13,13 +13,13 @@
 #if DEBUG
 #define mydebug(fmt, ...) printf("JZTool: %s: "fmt, __func__, ##__VA_ARGS__)
 #define POLLINGTIME_REFESH_CONFIG 3 //Secend
-#define POLLINGTIME  3					// Secend
+#define POLLINGTIME  3
 #define POLLINGTIME_ON  3					// Secend
 #define POLLINGTIME_OFF  3					// Secend
 #else
 #define mydebug(fmt, ...) ((void)0)
 #define POLLINGTIME_REFESH_CONFIG 15 //Secend
-#define POLLINGTIME  10					// Secend
+#define POLLINGTIME  10
 #define POLLINGTIME_ON  10					// Secend
 #define POLLINGTIME_OFF  20					// Secend
 #endif
@@ -30,7 +30,11 @@ struct configkeyval {
 };
 
 struct config {
-    int batt_limitcap;
+    int batt_limit;
+    int battstats_reset; // use command dumpsys batterystats --reset
+    int poolingtime; // pooling times
+    int poolingtime_on; // screen on
+    int poolingtime_off; // screen off
 };
 
 int file_wr(const char *filepath, const char wr, const int val);
