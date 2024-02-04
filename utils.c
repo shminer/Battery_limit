@@ -73,8 +73,8 @@ int read_config(const char *filepath, struct configkeyval *entries)
 				}
 			}
 		}
-		return numEntries;
 		fclose(file);
+		return numEntries;
 	} else {
 		printf("Config not exists\n");
 	}
