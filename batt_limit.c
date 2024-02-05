@@ -5,30 +5,16 @@
 #include "utils.h"
 #include "batt_limit.h"
 
-int batt_chaged = 0;
-
-static int ispluged() 
-{
-	if (file_wr(IS_CHARGING_USB, r, 0) == 1 || file_wr(IS_CHARGING_WIRELESS, r, 0) == 1 ) {
-		mydebug("Power connected\n");
-		batt_chaged = 1;
-		return 1;
-	} else {
-		mydebug("No Power connected\n");
-		return 0;
-	}
-}
-
 static int battst_reset(struct config *params) 
 {
-	if (params->battstats_reset == 1 && batt_chaged == 1) {
+	if (params->battstats_reset == 1 && params->batt_chaged == 1) {
 		int a;
 		a = system("dumpsys batterystats --reset > /dev/null 2>&1");
 		if (a == -1){
 			printf("Shell operation failed");
 			return 1;
 		}
-		batt_chaged = 0;
+		params->batt_chaged = 0;
 	}
 	return 0;
 }
@@ -36,7 +22,7 @@ static int battst_reset(struct config *params)
 static int chg_contol(struct config *params)
 {
 
-	if (ispluged()) {
+	if (ispluged(params)) {
 		int battcap = 0, batt_limit = 0, i = 0;
 		mydebug("BATT CAP limit to : %d\n", params->batt_limit);
 

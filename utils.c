@@ -80,3 +80,15 @@ int read_config(const char *filepath, struct configkeyval *entries)
 	}
 	return 0;
 }
+
+int ispluged(struct config *params) 
+{
+	if (file_wr(IS_CHARGING_USB, r, 0) == 1 || file_wr(IS_CHARGING_WIRELESS, r, 0) == 1 ) {
+		mydebug("Power connected\n");
+		params->batt_chaged = 1;
+		return 1;
+	} else {
+		mydebug("No Power connected\n");
+		return 0;
+	}
+}

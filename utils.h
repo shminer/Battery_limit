@@ -1,6 +1,8 @@
 
 #define VER "2401.4"
 #define CONFIG_FILE "/data/adb/modules/BATTLIMIT/config.txt"
+#define IS_CHARGING_USB "/sys/class/power_supply/usb/online"
+#define IS_CHARGING_WIRELESS "/sys/class/power_supply/wireless/online"
 
 #define r 'r'
 #define w 'w'
@@ -35,9 +37,11 @@ struct config {
     int poolingtime; // pooling times
     int poolingtime_on; // screen on
     int poolingtime_off; // screen off
+    int batt_chaged;
 };
 
 int file_wr(const char *filepath, const char wr, const int val);
 void getcurtime();
 int read_config(const char *filename, struct configkeyval *entries);
 int do_batt_limit(struct config *params);
+int ispluged(struct config *params);
