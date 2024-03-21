@@ -9,86 +9,130 @@
 int file_wr(const char *filepath, const char wr, const int val)
 {
 	FILE *file;
-	switch (wr) {
-		case 'r':
-			file = fopen(filepath, "r");
-			if (file != NULL) {
-				int readval;
-				fscanf(file, "%d", &readval);
-				fclose(file);
-				return readval;
-			} else {
-				printf("Kernel Node not exists\n");
-				return -1;
-			}
-			break;
-		case 'w':
-			file = fopen(filepath, "w");
-			if (file != NULL) {
-				fprintf(file, "%d", val);
-				fclose(file);
-				return 0;
-			} else {
-				printf("Kernel Node not exists\n");
-				return -1;
-			}
-			break;
-		default:
-			printf("no options\n");
+	switch (wr)
+	{
+	case 'r':
+		file = fopen(filepath, "r");
+		if (file != NULL)
+		{
+			int readval;
+			fscanf(file, "%d", &readval);
+			fclose(file);
+			return readval;
+		}
+		else
+		{
+			printf("Kernel Node not exists\n");
+			return -1;
+		}
+		break;
+	case 'w':
+		file = fopen(filepath, "w");
+		if (file != NULL)
+		{
+			fprintf(file, "%d", val);
+			fclose(file);
 			return 0;
+		}
+		else
+		{
+			printf("Kernel Node not exists\n");
+			return -1;
+		}
+		break;
+	default:
+		printf("no options\n");
+		return 0;
 	}
 }
 
-void getcurtime() 
+void getcurtime()
 {
 	time_t i;
 	struct tm *timeinfo;
-	
+
 	time(&i);
 	timeinfo = localtime(&i);
-	mydebug("=====NOW is %02d:%02d:%02d======\n",timeinfo->tm_hour, timeinfo->tm_min, timeinfo-> tm_sec);
+	mydebug("=====NOW is %02d:%02d:%02d======\n", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
 }
 
-int read_config(const char *filepath, struct configkeyval *entries) 
+int read_config(const char *filepath, struct configkeyval *entries)
 {
-    FILE *file;
+	FILE *file;
 	if (access(filepath, F_OK) == 0)
 	{
 		mydebug("Import config file: \"%s\"\n", filepath);
 		file = fopen(filepath, "r");
-		if (file == NULL) {
+		if (file == NULL)
+		{
 			printf("Error opening file, will use defaule configure");
 		}
 
 		char line[MAX_LINE_LENGTH];
 		int numEntries = 0;
 
-		while (fgets(line, sizeof(line), file) != NULL) {
-			if (sscanf(line, "%[^:]:%d", entries[numEntries].key, &entries[numEntries].value) == 2) 
+		while (fgets(line, sizeof(line), file) != NULL)
+		{
+			if (sscanf(line, "%[^:]:%d", entries[numEntries].key, &entries[numEntries].value) == 2)
 			{
 				mydebug("key %s, val: %d\n", entries[numEntries].key, entries[numEntries].value);
 				(numEntries)++;
-				if (numEntries >= MAX_ENTRIES) {
+				if (numEntries >= MAX_ENTRIES)
+				{
 					printf("Too many entries. Increase MAX_ENTRIES.\n");
 				}
 			}
 		}
 		fclose(file);
 		return numEntries;
-	} else {
+	}
+	else
+	{
 		printf("Config not exists\n");
 	}
 	return 0;
 }
 
-int ispluged(struct config *params) 
+int ispluged(struct config *params)
 {
-	if (file_wr(IS_CHARGING_USB, r, 0) == 1 || file_wr(IS_CHARGING_WIRELESS, r, 0) == 1 ) {
+	if (file_wr(IS_CHARGING_USB, r, 0) == 1 || file_wr(IS_CHARGING_WIRELESS, r, 0) == 1)
+	{
 		mydebug("Power connected\n");
 		params->batt_chaged = 1;
 		return 1;
-	} else {
+	}
+	else
+	{
 		mydebug("No Power connected\n");
 		return 0;
 	}
+}
+
+int get_bri(struct config *params)
+{
+	FILE *fp;
+	int brightness = -1;
+
+	/* Open the command for reading. */
+	fp = popen("settings get system screen_brightness", "r");
+	if (fp == NULL)
+	{
+		perror("Failed to run command");
+		return 1;
+	}
+
+	if (fscanf(fp, "%d", &brightness) == 1)
+	{
+		mydebug("Brightness is %s\n", brightness);
+		params->bri = brightness;
+	}
+	else
+	{
+		printf("Failed to read brightness value.\n");
+		return 1;
+	}
+
+	/* close */
+	pclose(fp);
+	return 0;
 }
