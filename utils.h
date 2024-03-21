@@ -37,7 +37,7 @@ struct config {
     int poolingtime; // pooling times
     int poolingtime_on; // screen on
     int poolingtime_off; // screen off
-    int batt_chaged;
+    int batt_changed;
 };
 
 int file_wr(const char *filepath, const char wr, const int val);

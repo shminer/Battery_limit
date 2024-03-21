@@ -7,14 +7,14 @@
 
 static int battst_reset(struct config *params) 
 {
-	if (params->battstats_reset == 1 && params->batt_chaged == 1) {
+	if (params->battstats_reset == 1 && params->batt_changed == 1) {
 		int a;
 		a = system("dumpsys batterystats --reset > /dev/null 2>&1");
 		if (a == -1){
 			printf("Shell operation failed");
 			return 1;
 		}
-		params->batt_chaged = 0;
+		params->batt_changed = 0;
 	}
 	return 0;
 }
