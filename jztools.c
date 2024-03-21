@@ -16,7 +16,7 @@ pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
 static void initialize_config(struct config *params)
 {
-	params->batt_limit = LIMIT_CAP; 
+	params->batt_limit = LIMIT_CAP;
 	params->battstats_reset = BATTSTATS_RESET;
 	params->poolingtime = POLLINGTIME;
 	params->poolingtime_on = POLLINGTIME_ON;
@@ -24,57 +24,70 @@ static void initialize_config(struct config *params)
 }
 
 static void parse_config(struct config *params, const char *filepath)
- {
-    struct configkeyval entries[MAX_ENTRIES];
+{
+	struct configkeyval entries[MAX_ENTRIES];
 	int linecount;
 
-    linecount = read_config(filepath, entries);
+	linecount = read_config(filepath, entries);
 
-    for (int i = 0; i < linecount; i++) {
-		if (strcmp(entries[i].key, "batt_limit") == 0) {
+	for (int i = 0; i < linecount; i++)
+	{
+		if (strcmp(entries[i].key, "batt_limit") == 0)
+		{
 			params->batt_limit = entries[i].value;
-		} else if (strcmp(entries[i].key, "battstats_reset") == 0) {
+		}
+		else if (strcmp(entries[i].key, "battstats_reset") == 0)
+		{
 			params->battstats_reset = entries[i].value;
-		} else if (strcmp(entries[i].key, "poolingtime_on") == 0) {
+		}
+		else if (strcmp(entries[i].key, "poolingtime_on") == 0)
+		{
 			params->poolingtime_on = entries[i].value;
-		} else if (strcmp(entries[i].key, "poolingtime_off") == 0) {
+		}
+		else if (strcmp(entries[i].key, "poolingtime_off") == 0)
+		{
 			params->poolingtime_off = entries[i].value;
 		}
-    }
+	}
 }
 
-void *refesh_config(void* arg) {
+void *refesh_config(void *arg)
+{
 
-    while (1) {
+	while (1)
+	{
 		pthread_mutex_lock(&mutex);
-		parse_config(&params,CONFIG_FILE);
+		parse_config(&params, CONFIG_FILE);
 		pthread_mutex_unlock(&mutex);
-        sleep(pollingtime_config);
-    }
+		sleep(pollingtime_config);
+	}
 
-    return NULL;
+	return NULL;
 }
 
-void *main_task(void* arg) {
+void *main_task(void *arg)
+{
 	int ret;
-    while (1) {
-        pthread_mutex_lock(&mutex);
+	while (1)
+	{
+		pthread_mutex_lock(&mutex);
 		pollingtime = params.poolingtime_on;
 		ret = do_batt_limit(&params);
-		if (ret) {
+		if (ret)
+		{
 			printf("Batt limit failed\n");
 		}
-		mydebug("Version: %s\n",VER);
+		mydebug("Version: %s\n", VER);
 		pthread_mutex_unlock(&mutex);
 		getcurtime();
-        sleep(pollingtime);
-    }
+		sleep(pollingtime);
+	}
 
-    return NULL;
+	return NULL;
 }
 
 // Loop
-int main() 
+int main()
 {
 	pthread_t thread_config, thread_main;
 
@@ -87,4 +100,3 @@ int main()
 	pthread_join(thread_main, NULL);
 	return 0;
 }
-
