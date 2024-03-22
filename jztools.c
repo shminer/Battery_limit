@@ -6,6 +6,7 @@
 
 #include "batt_limit.h"
 #include "utils.h"
+#include "dc.h"
 
 struct config params;
 int pollingtime_config;
@@ -21,6 +22,9 @@ static void initialize_config(struct config *params)
 	params->poolingtime = POLLINGTIME;
 	params->poolingtime_on = POLLINGTIME_ON;
 	params->poolingtime_off = POLLINGTIME_OFF;
+	params->dc_on_bri = 3900;
+	params->dc_en = 1;
+	params->dc_usb_force = 0;
 }
 
 static void parse_config(struct config *params, const char *filepath)
@@ -47,6 +51,18 @@ static void parse_config(struct config *params, const char *filepath)
 		else if (strcmp(entries[i].key, "poolingtime_off") == 0)
 		{
 			params->poolingtime_off = entries[i].value;
+		}
+		else if (strcmp(entries[i].key, "dc_en") == 0)
+		{
+			params->dc_en = entries[i].value;
+		}
+		else if (strcmp(entries[i].key, "dc_on_bri") == 0)
+		{
+			params->dc_on_bri = entries[i].value;
+		}
+		else if (strcmp(entries[i].key, "dc_usb_force") == 0)
+		{
+			params->dc_usb_force = entries[i].value;
 		}
 	}
 }
@@ -76,6 +92,11 @@ void *main_task(void *arg)
 		if (ret)
 		{
 			printf("Batt limit failed\n");
+		}
+		ret = dc_control(&params);
+		if (ret)
+		{
+			printf("dc control failed\n");
 		}
 		mydebug("Version: %s\n", VER);
 		pthread_mutex_unlock(&mutex);

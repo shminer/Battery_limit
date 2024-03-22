@@ -1,0 +1,7 @@
+battstats_reset:1
+poolingtime_on:10
+poolingtime_off:10
+batt_limit:85
+dc_en:1
+dc_on_bri:3900
+dc_usb_force:1

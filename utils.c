@@ -61,7 +61,7 @@ int read_config(const char *filepath, struct configkeyval *entries)
 	FILE *file;
 	if (access(filepath, F_OK) == 0)
 	{
-		mydebug("Import config file: \"%s\"\n", filepath);
+		//mydebug("Import config file: \"%s\"\n", filepath);
 		file = fopen(filepath, "r");
 		if (file == NULL)
 		{
@@ -75,7 +75,7 @@ int read_config(const char *filepath, struct configkeyval *entries)
 		{
 			if (sscanf(line, "%[^:]:%d", entries[numEntries].key, &entries[numEntries].value) == 2)
 			{
-				mydebug("key %s, val: %d\n", entries[numEntries].key, entries[numEntries].value);
+				//mydebug("key %s, val: %d\n", entries[numEntries].key, entries[numEntries].value);
 				(numEntries)++;
 				if (numEntries >= MAX_ENTRIES)
 				{
@@ -97,42 +97,13 @@ int ispluged(struct config *params)
 {
 	if (file_wr(IS_CHARGING_USB, r, 0) == 1 || file_wr(IS_CHARGING_WIRELESS, r, 0) == 1)
 	{
-		mydebug("Power connected\n");
-		params->batt_chaged = 1;
+		//mydebug("Power connected\n");
+		params->batt_changed = 1;
 		return 1;
 	}
 	else
 	{
-		mydebug("No Power connected\n");
+		//mydebug("No Power connected\n");
 		return 0;
 	}
-}
-
-int get_bri(struct config *params)
-{
-	FILE *fp;
-	int brightness = -1;
-
-	/* Open the command for reading. */
-	fp = popen("settings get system screen_brightness", "r");
-	if (fp == NULL)
-	{
-		perror("Failed to run command");
-		return 1;
-	}
-
-	if (fscanf(fp, "%d", &brightness) == 1)
-	{
-		mydebug("Brightness is %s\n", brightness);
-		params->bri = brightness;
-	}
-	else
-	{
-		printf("Failed to read brightness value.\n");
-		return 1;
-	}
-
-	/* close */
-	pclose(fp);
-	return 0;
 }
