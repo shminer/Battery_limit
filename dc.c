@@ -128,7 +128,9 @@ int dc_control(struct config *params)
 			mydebug("USB is active, will force enable DC\n");
 			file_wr(DC_PATH, w, 1);
 			dc_status = 1;
-		} else {
+		}
+		else
+		{
 			int bri;
 			dc_sys_status = file_wr(DC_PATH, r, 0);
 			if (dc_sys_status == dc_status || status == 0 || count >= dc_control_force_time)

@@ -1,6 +1,6 @@
 
 #define VER "2403.22"
-#define CONFIG_FILE "/data/adb/modules/BATTLIMIT/config.txt"
+#define CONFIG_FILE "/data/adb/modules/JZTOOLS/config.txt"
 #define IS_CHARGING_USB "/sys/class/power_supply/usb/online"
 #define IS_CHARGING_WIRELESS "/sys/class/power_supply/wireless/online"
 #define IS_CHARGING_WIRELESS "/sys/class/power_supply/wireless/online"
